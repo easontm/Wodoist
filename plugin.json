@@ -1,0 +1,12 @@
+{
+    "ID":"c467523b-f3ae-4440-8123-fe5fc5d632df",
+    "ActionKeyword":"todo",
+    "Name":"WoT POC",
+    "Description":"Turning the HW program into WOT",
+    "Author":"drinkteason",
+    "Version":"1.0",
+    "Language":"python",
+    "Website":"easontm.com",
+    "IcoPath":"Images\\app.png",
+    "ExecuteFileName":"main.py"
+}
