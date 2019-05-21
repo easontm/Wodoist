@@ -1,5 +1,5 @@
-from scanners import ParamScanners
-import result
+from .scanners import ParamScanners
+from . import result
 
 keywords = {
     "np": result.CreateProjectResult,
@@ -10,6 +10,8 @@ keywords = {
 class WoxQueryParser(object):
     @staticmethod
     def parse(query):
+        results = []
         word_arr = query.split()
         if word_arr[0] in keywords.keys():
-            result = keywords[word_arr[0]]
+            results.append(keywords[word_arr[0]](query))
+        return results
