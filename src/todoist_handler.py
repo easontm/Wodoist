@@ -58,7 +58,7 @@ class TodoistHandler(object):
         if api is None:
             api = self.get_api()
         for p in api.state['projects']:
-            if p['name'] == name:
+            if self.cleaner(p['name']) == self.cleaner(name):
                 return p
 
     def create_project(self, name, parent=None):
@@ -74,3 +74,7 @@ class TodoistHandler(object):
             parent_id = self.get_project_by_name(parent, api)['id']
         api.projects.add(name, parent_id=parent_id)
         api.commit()
+
+    @staticmethod
+    def cleaner(str_in):
+        return str_in.lower().replace('-', ' ')
