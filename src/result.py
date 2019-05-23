@@ -1,9 +1,10 @@
 from abc import ABC, abstractmethod
 from .scanners import ParamScanners as ps
+from .todoist_handler import TodoistHandler
 
 
 class Result(ABC):
-    json_template = {
+    json_base = {
         "Title": "Todoist",
         "SubTitle": "Query: {}",
         "IcoPath": "Images/app.ico",
@@ -30,19 +31,34 @@ class Result(ABC):
 class CreateProjectResult(Result):
     def __init__(self, query):
         super().__init__()
-        # TODO: maybe this shouldn't use get_project, because then
-        #  to make a project "test project" you'd need to type "np #'test project'"
-        #  There's no reason for someone invoking 'np' to type anything other than the name
-        self.name = ps.get_project(query)
+        self.parent_project = ps.get_project(query)
+        word_list = query.split()
+        if self.parent_project:
+            word_list.remove('#' + self.parent_project)
+        self.name = ' '.join(word_list)
+
+        subtitle_str = 'Create project "%s"' % self.name
+        action_params = [self.name]
+        if self.parent_project:
+            subtitle_str += ' under project #%s' % self.parent_project
+            action_params += [self.parent_project]
+
+        self.json = self.json_base
+        self.json["SubTitle"] = subtitle_str
+        self.json["JsonRPCAction"] = {
+            "method": "create_project",
+            "parameters": action_params,
+            "dontHideAfterAction": False
+        }
 
     def get_payload(self):
         pass
 
     def gen_json(self):
-        self.json_template["SubTitle"] = 'action_descr'
-        self.json_template["JsonRPCAction"] = {
+        self.json_base["SubTitle"] = 'action_descr'
+        self.json_base["JsonRPCAction"] = {
             "method": "submit_todoist",
             "parameters": ['action_params'],
             "dontHideAfterAction": False
         }
-        return self.json_template
+        return self.json_base

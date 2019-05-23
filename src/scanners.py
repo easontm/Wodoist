@@ -9,18 +9,19 @@ class ParamScanners(object):
     @staticmethod
     def get_project(query):
         """
-         Returns the first project tag it finds
+         Returns the first project tag it finds. Multi-word projects
+         can be identified if they are enclosed in quotes after the #,
+         e.g. #"project name"
         :param query: the entire query
         :return: the string representing the project name
         """
         # supports one word projects for now
-        word_list = query.split()
-        #TODO: make it so you can do multi-word projects, like:
-        # my task due on x #"my multiword project"
-        # something like: list = re.split(r'[\s\@](?=[\'\"])', query)
+        query = query.replace("'", '"')
+        word_list = re.findall(r'(?:[^\s,"]|"(?:\\.|[^"])*")+', query)
         for i in word_list:
             if i[0] == '#':
-                return i[1:]
+                return i[1:].strip("'").strip('"')
+        return None
 
     @staticmethod
     def get_labels(query):

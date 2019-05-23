@@ -3,7 +3,8 @@ from . import result
 
 keywords = {
     "np": result.CreateProjectResult,
-    "new project": result.CreateProjectResult
+    "new project": result.CreateProjectResult,
+    "create project": result.CreateProjectResult,
 }
 
 
@@ -12,6 +13,8 @@ class WoxQueryParser(object):
     def parse(query):
         results = []
         word_arr = query.split()
-        if word_arr[0] in keywords.keys():
-            results.append(keywords[word_arr[0]](query))
+        for key in keywords.keys():
+            if query.lower().find(key) == 0:
+                results.append(keywords[key](query[len(key):]))
+
         return results

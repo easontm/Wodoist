@@ -1,16 +1,17 @@
 # -*- coding: utf-8 -*-
 
-from src.wox import Wox
+# from src.wox import Wox
 # from scanners import ParamScanners
 from .woxqueryparser import WoxQueryParser as wqp
+from .todoist_handler import TodoistHandler as th
 
 
 class Wodoist(Wox):
 
     def query(self, query):
         parse_results = wqp.parse(query)
-        results = [r.gen_json() for r in parse_results]
-        '''
+        results = [r.json for r in parse_results]
+
         results.append({
             "Title": "Todoist",
             "SubTitle": "Query: {}".format(query),
@@ -22,7 +23,7 @@ class Wodoist(Wox):
             },
             "ContextData": "ctxData"
         })
-        '''
+
         return results
 
     def context_menu(self, data):
