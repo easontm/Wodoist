@@ -41,11 +41,23 @@ class TodoistHandler(object):
         self.api.sync()
         return self.api
 
-    def submit_todoist(self, action):
-        api = self.get_api()
-        project1 = api.projects.add(action)
-        api.commit()
-        # task1 = api.items.add('Task1', project_id=project1['id'])
+    '''
+    @staticmethod
+    def submit_todoist(action, *args):
+        action(*args)
+    '''
+
+    @staticmethod
+    def func_dispatcher(**kwargs):
+        """
+        Receives execution data from the Wodoist click events
+        > kwargs['func'] should be a method in this class to execute
+        > Rest of the payload should be parameters
+        :param kwargs:
+        :return:
+        """
+        func = kwargs.pop('func')
+        func(**kwargs)
 
     def get_project_by_name(self, name, api=None):
         """
@@ -61,13 +73,17 @@ class TodoistHandler(object):
             if self.cleaner(p['name']) == self.cleaner(name):
                 return p
 
-    def create_project(self, name, parent=None):
+    def create_project(self, name=None, parent=None, **kwargs):
         """
         Creates a project and commits the change
         :param name: str name of the project you want to make
         :param parent: optional - str name of the parent project
         :return:
         """
+        if not name:
+            name = kwargs.pop('name')
+        if not parent:
+            parent = kwargs.pop('parent', None)
         api = self.get_api()
         parent_id = None
         if parent is not None:

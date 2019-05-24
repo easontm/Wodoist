@@ -1,4 +1,4 @@
-from .scanners import ParamScanners
+# from .scanners import ParamScanners
 from . import result
 
 keywords = {
@@ -12,9 +12,11 @@ class WoxQueryParser(object):
     @staticmethod
     def parse(query):
         results = []
-        word_arr = query.split()
         for key in keywords.keys():
             if query.lower().find(key) == 0:
                 results.append(keywords[key](query[len(key):]))
-
+            else:
+                # TODO generate tasks based on input
+                word_arr = query.split()
+                continue
         return results

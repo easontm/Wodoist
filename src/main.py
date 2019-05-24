@@ -1,9 +1,9 @@
 # -*- coding: utf-8 -*-
 
-# from src.wox import Wox
+from src.wox import Wox
 # from scanners import ParamScanners
 from .woxqueryparser import WoxQueryParser as wqp
-from .todoist_handler import TodoistHandler as th
+from src.todoist_handler import TodoistHandler as th
 
 
 class Wodoist(Wox):
@@ -18,7 +18,7 @@ class Wodoist(Wox):
             "IcoPath":"Images/app.ico",
             "JsonRPCAction":{
                 "method": "submit_todoist",
-                "parameters":[query],
+                "parameters": [query],
                 "dontHideAfterAction": False
             },
             "ContextData": "ctxData"
@@ -34,6 +34,22 @@ class Wodoist(Wox):
             "IcoPath":"Images/app.ico"
         })
         return results
+
+    '''
+    @staticmethod
+    def submit_wrapper(*args):
+        th.submit_todoist(*args)
+    '''
+
+    @staticmethod
+    def submit_wrapper(**kwargs):
+        """
+        Passes contents of Json parameters to TH class
+        :param kwargs: should contain a value for 'func' representing the function to execute
+               from the TodoistHandler class
+        :return: no
+        """
+        th.func_dispatcher(**kwargs)
 
 
 if __name__ == "__main__":
