@@ -1,15 +1,15 @@
 from abc import ABC, abstractmethod
 from .scanners import ParamScanners as ps
-from .todoist_handler import TodoistHandler as th
+import json
 
 
 class Result(ABC):
     json_base = {
         "Title": "Todoist",
-        "SubTitle": "Query: {}",
+        "SubTitle": "Todoist",
         "IcoPath": "Images/app.ico",
         "JsonRPCAction": {
-            "method": "submit_todoist",
+            "method": "submit_wrapper",
             "parameters": [],
             "dontHideAfterAction": False
         },
@@ -29,21 +29,15 @@ class CreateProjectResult(Result):
             word_list.remove('#' + self.parent_project)
         self.name = ' '.join(word_list)
 
-        subtitle_str = 'Create project "%s"' % self.name
-        # action_params = [th.create_project, self.name]
+        title_str = 'Create project "%s"' % self.name
         action_params = {
-            'func': th.create_project,
+            'func': 'create_project',
             'name': self.name
         }
         if self.parent_project:
-            subtitle_str += ' under project #%s' % self.parent_project
-            # action_params += [self.parent_project]
-            action_params['parent'] = [self.parent_project]
+            title_str += ' under project #%s' % self.parent_project
+            action_params['parent'] = self.parent_project
 
         self.json = self.json_base
-        self.json["SubTitle"] = subtitle_str
-        self.json["JsonRPCAction"] = {
-            "method": "create_project",
-            "parameters": [action_params],
-            "dontHideAfterAction": False
-        }
+        self.json["Title"] = title_str
+        self.json["JsonRPCAction"]["parameters"] = [json.dumps(action_params)]

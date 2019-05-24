@@ -2,7 +2,9 @@ import os.path
 from todoist.api import TodoistAPI
 import logging
 
+logging.basicConfig(level=logging.DEBUG, filename='handler.log',  format='%(name)s - %(levelname)s - %(message)s')
 logger = logging.getLogger(__name__)
+
 
 '''
 def get_api():
@@ -16,15 +18,21 @@ token_location = os.path.join(
     os.path.dirname(os.path.abspath(__file__)),
     '.todoist_token'
 )
-logger.info('Token location: %s' % token_location)
+# logger.info('Token location: %s' % token_location)
 
 if os.path.exists(token_location):
     with open(token_location) as f:
         token = f.readline().strip()
-logger.info('Token: %s' % token)
+# logger.info('Token: %s' % token)
 
 
 class TodoistHandler(object):
+    __instance = None
+
+    def __new__(cls):
+        if TodoistHandler.__instance is None:
+            TodoistHandler.__instance = object.__new__(cls)
+        return TodoistHandler.__instance
 
     def __init__(self):
         self.api = None
@@ -56,8 +64,8 @@ class TodoistHandler(object):
         :param kwargs:
         :return:
         """
-        func = kwargs.pop('func')
-        func(**kwargs)
+        # func = kwargs.pop('func')
+        # func(**kwargs)
 
     def get_project_by_name(self, name, api=None):
         """
@@ -84,6 +92,7 @@ class TodoistHandler(object):
             name = kwargs.pop('name')
         if not parent:
             parent = kwargs.pop('parent', None)
+        # logger.debug('create project invoked -- name: {0} -- parent: {1}'.format(name, parent))
         api = self.get_api()
         parent_id = None
         if parent is not None:
